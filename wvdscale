@@ -1,11 +1,14 @@
 $AADTenantId = (Get-AzContext).Tenant.Id
 
-$AzSubscription = Get-AzSubscription | Out-GridView -OutputMode:Single -Title "Select your Azure Subscription"
-Select-AzSubscription -Subscription $AzSubscription.Id
+$AzSubscriptionId = Read-Host 
 
-$ResourceGroup = Get-AzResourceGroup | Out-GridView -OutputMode:Single -Title "Select the resource group for the new Azure Logic App"
+$ResourceGroupName = Read-Host
 
-$WVDHostPool = Get-AzResource -ResourceType "Microsoft.DesktopVirtualization/hostpools" | Out-GridView -OutputMode:Single -Title "Select the host pool you'd like to scale"
+$ResourceGroupLocation = Read-Host
+
+$WVDHostPoolName = Read-Host
+
+$WVDHostPoolResourceGroupName = Read-Host
 
 $LogAnalyticsWorkspaceId = Read-Host -Prompt "If you want to use Log Analytics, enter the Log Analytics Workspace ID returned by when you created the Azure Automation account, otherwise leave it blank"
 $LogAnalyticsPrimaryKey = Read-Host -Prompt "If you want to use Log Analytics, enter the Log Analytics Primary Key returned by when you created the Azure Automation account, otherwise leave it blank"
@@ -27,12 +30,12 @@ $WebhookURIAutoVar = Get-AzAutomationVariable -Name 'WebhookURIARMBased' -Resour
 
 $Params = @{
      "AADTenantId"                   = $AADTenantId                             # Optional. If not specified, it will use the current Azure context
-     "SubscriptionID"                = $AzSubscription.Id                       # Optional. If not specified, it will use the current Azure context
-     "ResourceGroupName"             = $ResourceGroup.ResourceGroupName         # Optional. Default: "WVDAutoScaleResourceGroup"
-     "Location"                      = $ResourceGroup.Location                  # Optional. Default: "West US2"
+     "SubscriptionID"                = $AzSubscriptionId                       # Optional. If not specified, it will use the current Azure context
+     "ResourceGroupName"             = $ResourceGroupName         # Optional. Default: "WVDAutoScaleResourceGroup"
+     "Location"                      = $ResourceGroupLocation                  # Optional. Default: "West US2"
      "UseARMAPI"                     = $true
-     "HostPoolName"                  = $WVDHostPool.Name
-     "HostPoolResourceGroupName"     = $WVDHostPool.ResourceGroupName           # Optional. Default: same as ResourceGroupName param value
+     "HostPoolName"                  = $WVDHostPoolName
+     "HostPoolResourceGroupName"     = $WVDHostPoolResourceGroupName           # Optional. Default: same as ResourceGroupName param value
      "LogAnalyticsWorkspaceId"       = $LogAnalyticsWorkspaceId                 # Optional. If not specified, script will not log to the Log Analytics
      "LogAnalyticsPrimaryKey"        = $LogAnalyticsPrimaryKey                  # Optional. If not specified, script will not log to the Log Analytics
      "ConnectionAssetName"           = $AutoAccountConnection.Name              # Optional. Default: "AzureRunAsConnection"
